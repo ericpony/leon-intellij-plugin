@@ -1,0 +1,16 @@
+#!/bin/bash
+
+SCALACLASSPATH="target/scala-2.11/leon_2.11-3.0.jar "$(echo ./runtime/*.jar)
+
+case $(uname -o) in 
+  Cygwin) 
+    SCALACLASSPATH=$(echo $SCALACLASSPATH | tr ' ' ';')";unmanaged/64/scalaz3-win-64b-2.1.jar" 
+    ;;
+  *)
+    SCALACLASSPATH=$(echo $SCALACLASSPATH | tr ' ' ':')":unmanaged/64/scalaz3-unix-64b-2.1.jar" 
+    ;;
+esac
+
+echo $SCALACLASSPATH
+
+java -Xmx2G -Xms512M -classpath ${SCALACLASSPATH} -Dscala.usejavacp=false scala.tools.nsc.MainGenericRunner -classpath ${SCALACLASSPATH} leon.Main $@ 2>&1 | tee -i last.log
