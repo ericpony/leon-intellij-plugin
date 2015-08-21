@@ -3,7 +3,7 @@
 This repo offers the minimal files needed to integrate [Leon](https://github.com/epfl-lara/leon) into your IntelliJ Scala project.
 
 
-## Setup IntelliJ IDEA 14.0 on Windows  
+### Setup IntelliJ IDEA 14.0
 
 1. Go to _File > Import. Select module_ Select _Create Module from Existing Sources_ to import the `library` directory in this repo to your project. Suppose we name the new module as `Leon`.
 
@@ -11,14 +11,18 @@ This repo offers the minimal files needed to integrate [Leon](https://github.com
 
 3. Go to the dependency list of the `Leon` module. Add a Scala SDK as an external library. Also, add the `library` directory as _Sources_ dependency. This step enables IntelliJ to make the `Leon` module. 
 
-4. Make the `Leon` module.
+4. Go to _Build_ and choose _Make Module 'Leon'_.
 
-5. If everything went right, now you should be able to compile code that uses the Leon packages.
+5. If everything went right, now you should be able to compile Leon programs (or more precisely, Leon programs that don’t use special constructs such as `choose`) in IntelliJ.
 
-### Remarks
+_Remark._ If you simply add the `library` directory to the dependency list of your project, IntelliJ can still recognize the Leon packages in your source code. However, it would report "package not found" errors if you try to compile the code.  
 
-If you simply add the `library` directory to the dependency list of your project, IntelliJ can still recognize the Leon packages in your source code. However, it would report "package not found" errors if you try to compile the code.  
+### Command-line Execution
 
-## Command-line Execution
+To run Leon in command line, you need to make z3 or cvc4 accessible in PATH. The easiest way to obtain a Z3 executable for your OS is to download it from [here](https://github.com/Z3Prover/bin). The `./leon` script in this repo helps you run Leon in the default settings. For example, try `./leon example/FlatMap.scala`. The script can take options in addition to a filename. See [here](http://leon.epfl.ch/doc/options.html) for details of available options. 
 
-To run Leon in command line, you need to make z3 or cvc4 accessible in PATH. The easiest way to obtain a Z3 executable for your OS is to download it from [here](https://github.com/Z3Prover/bin). The `leon` script in this repo helps you run Leon in the default settings. For example, try `./leon example/FlatMap.scala`. The script can take options in addition to a filename. See [here](http://leon.epfl.ch/doc/options.html) for details of available options. 
+### Command-line compilation
+
+To compile Leon programs using scalac, you need to explicitly include files from the Leon library (that are implicitly bundled when you use the `./leon` script):
+
+    scalac $(find ./library -name "*.scala" | xargs) MyLeonApp.scala
