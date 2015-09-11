@@ -1,13 +1,14 @@
 #!/bin/bash
 
-SCALACLASSPATH="target/scala-2.11/leon_2.11-3.0.jar "$(echo ./runtime/*.jar)
+BASEDIR=$(dirname $0)
+SCALACLASSPATH="$BASEDIR/target/scala-2.11/leon_2.11-3.0.jar "$(echo $BASEDIR/runtime/*.jar)
 
 case $(uname -o) in 
   Cygwin) 
     SCALACLASSPATH=$(echo $SCALACLASSPATH | tr ' ' ';')
     if [[ $(getconf LONG_BIT) = 64 ]]
     then 
-      SCALACLASSPATH="$SCALACLASSPATH;unmanaged/64/scalaz3-win-64b-2.1.jar" 
+      SCALACLASSPATH="$SCALACLASSPATH;$BASEDIR/unmanaged/64/scalaz3-win-64b-2.1.jar" 
     else
       echo "Sorry, we don't have a Leon executable for your platform." 1>&2 
       exit 1
@@ -17,14 +18,14 @@ case $(uname -o) in
     SCALACLASSPATH=$(echo $SCALACLASSPATH | tr ' ' ':')
     if [[ $(getconf LONG_BIT) = 64 ]]
     then 
-      SCALACLASSPATH="$SCALACLASSPATH:unmanaged/64/scalaz3-unix-64b-2.1.jar" 
+      SCALACLASSPATH="$SCALACLASSPATH:$BASEDIR/unmanaged/64/scalaz3-unix-64b-2.1.jar" 
     else
-      SCALACLASSPATH="$SCALACLASSPATH:unmanaged/32/scalaz3_2.10-2.0.jar" 
+      SCALACLASSPATH="$SCALACLASSPATH:$BASEDIR/unmanaged/32/scalaz3_2.10-2.0.jar" 
     fi
     ;;
 esac
 
-[[ ! -e /tmp/leon ]] && rm -rf /tmp/leon && ln -s $(pwd)/library/leon /tmp/
+rm -rf /tmp/leon && ln -s $BASEDIR/library/leon /tmp/
 
 #echo $SCALACLASSPATH
 
